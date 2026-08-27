@@ -1,0 +1,64 @@
+flowchart TB
+
+  subgraph UI["SCREENS (Next.js App Router, mobile-first)"]
+    S1["1 Goal<br/>plain-language input"]
+    S2["2 Connect<br/>mock wallet consent"]
+    S3["3 Record view<br/>fields side by side"]
+    S4["4 Conflicts<br/>mismatches named"]
+    S5["5 Fix queue<br/>ranked by unlock"]
+    S6["6 Eligibility<br/>pass / blocked + citation"]
+    S7["7 Bundle<br/>share code + QR + expiry"]
+    S8["8 What's real<br/>honesty page"]
+  end
+
+  subgraph SESSION["SESSION STATE (React, in-memory, nothing persists)"]
+    ST["citizenId · goalId · conflicts · selectedFixes"]
+  end
+
+  subgraph ENGINE["ENGINE (pure TypeScript, unit tested, no network)"]
+    E1["normaliseFields()"]
+    E2["buildConflicts()"]
+    E3["evaluateRules()"]
+    E4["rankFixes()"]
+    E5["buildBundle()"]
+  end
+
+  subgraph DATA["TYPED DATA (build-time validated)"]
+    D1["seed/citizens.ts<br/>synthetic, 2 profiles"]
+    D2["rules/*.ts<br/>every rule has source citation"]
+    D3["entitlements.ts<br/>docs, SLA, apply URL"]
+  end
+
+  subgraph MOCK["MOCK ADAPTERS (labelled, spec-shaped)"]
+    M1["walletAdapter<br/>DigiLocker-shaped"]
+    M2["linkageProbes<br/>P1, stubbed in P0"]
+  end
+
+  subgraph AI["AI LAYER (explain only, never decide)"]
+    A1["/api/explain<br/>3s timeout"]
+    A2["deterministic fallback string"]
+  end
+
+  S1 --> ST
+  S2 --> M1
+  M1 --> ST
+  ST --> ENGINE
+  DATA --> ENGINE
+  E1 --> E2 --> E3 --> E4
+  E4 --> S5
+  E3 --> S6
+  E2 --> S4
+  ST --> S3
+  E5 --> S7
+  ENGINE -.->|"deterministic text"| A1
+  A1 -.->|"on failure"| A2
+  A1 -.->|"plain language"| UI
+  MOCK --> S8
+  DATA --> S8
+
+  classDef real fill:#e8f5e9,stroke:#2e7d32
+  classDef mock fill:#fff3e0,stroke:#ef6c00
+  classDef ai fill:#e3f2fd,stroke:#1565c0
+  class ENGINE,DATA real
+  class MOCK mock
+  class AI ai

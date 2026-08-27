@@ -1,33 +1,53 @@
 'use client';
 
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
-import { POST_MATRIC_SCHOLARSHIP_ID } from '@/lib/seed/entitlements';
+import type { TrackedReport } from '@/lib/types';
 
 interface SessionState {
   citizenId: string | null;
-  goalId: string;
-  selectedFixes: string[];
+  revealed: boolean;
+  reportedIssues: Record<string, TrackedReport>;
+  activityChoices: Record<string, boolean>;
   setCitizenId(id: string): void;
-  setGoalId(id: string): void;
-  setSelectedFixes(ids: string[]): void;
+  setRevealed(value: boolean): void;
+  reportIssue(id: string): TrackedReport;
+  setActivityChoice(id: string, recognised: boolean): TrackedReport | null;
 }
 
 const SessionContext = createContext<SessionState | null>(null);
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [citizenId, setCitizenId] = useState<string | null>(null);
-  const [goalId, setGoalId] = useState(POST_MATRIC_SCHOLARSHIP_ID);
-  const [selectedFixes, setSelectedFixes] = useState<string[]>([]);
+  const [revealed, setRevealed] = useState(false);
+  const [reportedIssues, setReportedIssues] = useState<Record<string, TrackedReport>>({});
+  const [activityChoices, setActivityChoices] = useState<Record<string, boolean>>({});
+
+  function reportIssue(id: string): TrackedReport {
+    const report = reportedIssues[id] ?? {
+      ref: `MLN-RPT-${id.replace(/[^a-z0-9]/gi, '').slice(-4).toUpperCase().padStart(4, '0')}`,
+      status: 'received' as const,
+    };
+    setReportedIssues((current) => ({ ...current, [id]: report }));
+    return report;
+  }
+
+  function setActivityChoice(id: string, recognised: boolean): TrackedReport | null {
+    setActivityChoices((current) => ({ ...current, [id]: recognised }));
+    return recognised ? null : reportIssue(`activity-${id}`);
+  }
+
   const value = useMemo(
     () => ({
       citizenId,
-      goalId,
-      selectedFixes,
+      revealed,
+      reportedIssues,
+      activityChoices,
       setCitizenId,
-      setGoalId,
-      setSelectedFixes,
+      setRevealed,
+      reportIssue,
+      setActivityChoice,
     }),
-    [citizenId, goalId, selectedFixes],
+    [citizenId, revealed, reportedIssues, activityChoices],
   );
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }

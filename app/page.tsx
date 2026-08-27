@@ -1,54 +1,52 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ScreenIntro } from '@/components/ScreenIntro';
-import { resolveGoal } from '@/lib/engine/goal';
+import { MockChip } from '@/components/MockChip';
+import { ReadonlyOtp, ReadonlyPhone } from '@/components/ReadonlyOtp';
 import { useSession } from '@/lib/state';
 
-const suggestions = [
-  'Help with college fees',
-  'Post-matric scholarship',
-  'Check my study documents',
-];
-
-export default function GoalPage() {
+export default function LoginPage() {
   const router = useRouter();
-  const { setGoalId } = useSession();
-  const [goal, setGoal] = useState('');
+  const { setCitizenId, setRevealed } = useSession();
+  const [step, setStep] = useState<'phone' | 'otp'>('phone');
 
-  function continueJourney(event: FormEvent) {
-    event.preventDefault();
-    setGoalId(resolveGoal(goal));
-    router.push('/connect');
+  function enterDemo() {
+    setCitizenId('demo-priya');
+    setRevealed(false);
+    router.push('/home');
   }
 
   return (
-    <main className="page-shell landing-shell">
-      <ScreenIntro step="1 of 8 · Your goal" title="Catch record problems before they stop you.">
-        Tell us what you want to apply for. We will check the same details across your records.
-      </ScreenIntro>
-      <form className="card goal-form" onSubmit={continueJourney}>
-        <label htmlFor="goal">What are you trying to do?</label>
-        <input
-          id="goal"
-          value={goal}
-          onChange={(event) => setGoal(event.target.value)}
-          placeholder="For example: help with college fees"
-          autoComplete="off"
-        />
-        <div className="chip-row" aria-label="Example goals">
-          {suggestions.map((suggestion) => (
-            <button type="button" className="choice-chip" key={suggestion} onClick={() => setGoal(suggestion)}>
-              {suggestion}
-            </button>
-          ))}
+    <main className="login-shell">
+      <section className="login-copy">
+        <p className="eyebrow">Milaan · record clarity</p>
+        <h1>See what could stop your application.</h1>
+        <p>Compare fictional records, find contradictions and understand the next action before a delay costs money.</p>
+      </section>
+      <section className="card login-card" aria-label="Simulated login">
+        <div className="card-heading">
+          <div>
+            <p className="eyebrow">Step {step === 'phone' ? '1' : '2'} of 2</p>
+            <h2>{step === 'phone' ? 'Use the sample number' : 'Check the sample OTP'}</h2>
+          </div>
+          <MockChip>Simulated</MockChip>
         </div>
-        <button className="primary-button" type="submit">
-          Check my records <span aria-hidden="true">→</span>
-        </button>
-      </form>
-      <p className="footer-note">No details are saved. This journey uses fictional people and records.</p>
+        {step === 'phone' ? (
+          <>
+            <ReadonlyPhone />
+            <button className="primary-button" type="button" onClick={() => setStep('otp')}>Send OTP</button>
+          </>
+        ) : (
+          <>
+            <ReadonlyOtp />
+            <button className="primary-button" type="button" onClick={enterDemo}>Verify</button>
+            <button className="link-button" type="button" onClick={() => setStep('phone')}>Back</button>
+          </>
+        )}
+        <button className="skip-link" type="button" onClick={enterDemo}>Skip to demo</button>
+        <p className="simulation-note">simulated login · no real Aadhaar or OTP is used</p>
+      </section>
     </main>
   );
 }

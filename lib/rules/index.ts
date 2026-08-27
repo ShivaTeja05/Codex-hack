@@ -1,4 +1,5 @@
-import type { Rule } from '@/lib/types';
+import type { Linkage, ReasonCode, Rule } from '@/lib/types';
+import { validateCitationSources } from '@/lib/validation/citations';
 import { consistencyRules } from './consistency';
 import { documentRules } from './documents';
 import { eligibilityRules } from './eligibility';
@@ -9,13 +10,22 @@ export const allRules: Rule[] = [
   ...documentRules,
 ];
 
-export function validateRuleSources(rules: Rule[]): void {
-  const invalid = rules.filter((rule) => !rule.source.instrument.trim());
-  if (invalid.length > 0) {
-    throw new Error(
-      `Rules missing source.instrument: ${invalid.map((rule) => rule.id).join(', ')}`,
-    );
-  }
+export function validateRuleSources(
+  rules: Rule[],
+  linkages: Linkage[] = [],
+  reasonCodes: ReasonCode[] = [],
+): void {
+  validateCitationSources([
+    ...rules.map((rule) => ({ id: rule.id, source: rule.source })),
+    ...linkages.map((linkage) => ({
+      id: `linkage.${linkage.domain}`,
+      source: linkage.source,
+    })),
+    ...reasonCodes.map((reasonCode) => ({
+      id: `reasonCode.${reasonCode.code}`,
+      source: reasonCode.source,
+    })),
+  ]);
 }
 
 validateRuleSources(allRules);

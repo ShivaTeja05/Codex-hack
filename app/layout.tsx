@@ -5,8 +5,8 @@ import { SessionProvider } from '@/lib/state';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Milaan — check before you apply',
-  description: 'A synthetic prototype that finds record conflicts before an application.',
+  title: 'Milaan — understand your connected records',
+  description: 'A privacy-safe synthetic prototype for understanding record differences before an application.',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -17,7 +17,7 @@ export default function ConnectPage() {
   }
 
   return (
-    <main className="page-shell">
+    <main className="page-shell connect-shell">
       <ScreenIntro step="2 of 8 · Connect" title="Choose a fictional record set.">
         This simulated wallet shows how consent could work. It never contacts DigiLocker or a government system.
       </ScreenIntro>

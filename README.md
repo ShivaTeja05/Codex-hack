@@ -1,6 +1,6 @@
 # Milaan
 
-Milaan is a mobile-first Phase 0 prototype for the **Build What Moves India** hackathon. It checks the same fields across fictional records, names the differences that may block a post-matric scholarship check, ranks the first fix, and creates a scoped read-only bundle.
+Milaan is a responsive, mobile-first Phase 0 prototype for the **Build What Moves India** hackathon. It checks the same fields across fictional records, names the differences that may block a post-matric scholarship check, ranks the first fix, and creates a scoped read-only bundle. The same journey adapts from compact phones to tablets, laptops and wide desktop screens.
 
 > Independent prototype — synthetic data. Milaan does not connect to or represent any government system.
 
@@ -54,7 +54,7 @@ The four rule citations are deliberately visible in the eligibility screen. The 
 | Item | Status |
 | --- | --- |
 | Public phone URL opens without login | Pending deployment and real-device check |
-| Both demo citizens complete the journey | Passed in browser automation at 360px |
+| Both demo citizens complete the journey | Passed in browser automation |
 | Every visible control works | Passed for the complete journey |
 | All three required test files pass | Passed |
 | Journey works without `OPENAI_API_KEY` | Passed |
@@ -62,6 +62,8 @@ The four rule citations are deliberately visible in the eligibility screen. The 
 | Banner is visible on every screen | Passed |
 | No Aadhaar, PAN, OTP, password or payment input exists | Passed by source scan |
 | Incognito on a real phone using mobile data | Pending manual device check |
+
+Responsive browser checks pass at 360×800, 768×900, 1280×800 and 1440×900 with no horizontal overflow.
 
 ## Dependency note
 

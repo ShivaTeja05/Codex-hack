@@ -11,7 +11,7 @@ export default function ConflictsPage() {
   const { citizenId, goalId } = useSession();
   const conflicts = buildConflicts(getCitizen(citizenId), goalId);
   return (
-    <main className="page-shell">
+    <main className="page-shell results-shell">
       <ScreenIntro step="4 of 8 · Differences" title={conflicts.length ? `We found ${conflicts.length} details to check.` : 'These records agree.'}>
         Small differences can delay an application. Blocking items need attention first; warnings are worth checking.
       </ScreenIntro>

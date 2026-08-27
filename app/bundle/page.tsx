@@ -21,7 +21,7 @@ export default function BundlePage() {
     QRCode.toDataURL(url, { width: 440, margin: 1, color: { dark: '#17221f', light: '#fffdf8' } }).then(setQr).catch(() => setQr(''));
   }, [payload]);
   return (
-    <main className="page-shell">
+    <main className="page-shell bundle-shell">
       <ScreenIntro step="7 of 8 · Share bundle" title="Share only what this check needs.">
         The long link contains the complete bundle. There is no database, lookup page or list of other bundles.
       </ScreenIntro>

@@ -208,10 +208,51 @@ h2 { margin: 0; font-family: Georgia, serif; font-size: 25px; font-weight: 500; 
 @media (min-width: 640px) {
   .page-shell { padding-top: 58px; }
   .profile-grid, .bundle-columns { grid-template-columns: 1fr 1fr; }
+  .document-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .field-row { grid-template-columns: 180px 1fr; align-items: baseline; }
   .value-pair { grid-template-columns: repeat(2, 1fr); }
   .honesty-row { grid-template-columns: 1.1fr 90px 2fr; align-items: center; }
   .card { padding: 24px; }
+}
+
+@media (min-width: 900px) {
+  .site-header { width: min(100% - 64px, 1180px); min-height: 88px; }
+  .page-shell { width: min(100% - 64px, 840px); padding: 72px 0 96px; }
+  .wide-shell, .connect-shell, .results-shell { width: min(100% - 64px, 1120px); }
+  .bundle-shell { width: min(100% - 64px, 920px); }
+
+  .landing-shell {
+    display: grid;
+    width: min(100% - 64px, 1120px);
+    min-height: calc(100vh - 124px);
+    grid-template-columns: minmax(0, 1.1fr) minmax(380px, .9fr);
+    gap: clamp(44px, 7vw, 92px);
+    align-content: center;
+    align-items: center;
+    padding-top: 40px;
+  }
+  .landing-shell .screen-intro { margin: 0; }
+  .landing-shell .screen-intro h1 { max-width: 11ch; font-size: clamp(58px, 6vw, 78px); }
+  .landing-shell .goal-form { padding: 30px; }
+  .landing-shell .footer-note { grid-column: 1 / -1; margin-top: -24px; }
+
+  .connect-shell .screen-intro, .results-shell .screen-intro, .wide-shell .screen-intro {
+    max-width: 760px;
+  }
+  .profile-grid { gap: 18px; }
+  .document-grid { gap: 18px; }
+  .conflict-list, .rule-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .fix-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .fix-list .hero-fix { grid-column: 1 / -1; padding: 32px; }
+  .fix-list .hero-fix h2 { max-width: 24ch; font-size: 32px; }
+  .fix-list .hero-fix .unlock-line { max-width: 42ch; font-size: 20px; }
+  .bundle-columns { gap: 18px; }
+}
+
+@media (min-width: 1280px) {
+  .wide-shell, .connect-shell, .results-shell { width: min(100% - 96px, 1180px); }
+  .document-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .landing-shell { width: min(100% - 96px, 1200px); }
 }
 
 @media (prefers-reduced-motion: reduce) {

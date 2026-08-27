@@ -13,7 +13,7 @@ export default function FixesPage() {
   const fixes = rankFixes(buildConflicts(getCitizen(citizenId), goalId), entitlements);
   const entitlement = getEntitlement(goalId);
   return (
-    <main className="page-shell">
+    <main className="page-shell results-shell">
       <ScreenIntro step="5 of 8 · Fix queue" title={fixes.length ? 'Start with the fix that unlocks the most.' : 'Nothing needs correcting.'}>
         Work from the top. This order comes only from the computed record differences.
       </ScreenIntro>

@@ -13,7 +13,7 @@ export default function EligibilityPage() {
   const results = evaluateRules(getCitizen(citizenId), goalId);
   const blocked = results.filter((result) => result.status === 'block').length;
   return (
-    <main className="page-shell">
+    <main className="page-shell results-shell">
       <ScreenIntro step="6 of 8 · Rule check" title={blocked ? `${blocked} rules are blocked.` : 'The demo rules pass.'}>
         This is not an approval decision. It shows what each configured rule requires and what the synthetic record says.
       </ScreenIntro>

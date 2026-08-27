@@ -7,7 +7,7 @@ export default function OfficerBundlePage({ params }: { params: { code: string }
   if (!bundle) return <main className="page-shell"><div className="card empty-state"><h1>Bundle not readable</h1><p>The self-contained reference is incomplete or changed.</p><Link href="/" className="secondary-button" style={{ marginTop: 16 }}>Return home</Link></div></main>;
   const expired = new Date(bundle.expiresAt).getTime() < Date.now();
   return (
-    <main className="page-shell">
+    <main className="page-shell bundle-shell">
       <div className="screen-intro"><p className="eyebrow">Read-only officer view</p><h1>Scoped synthetic record bundle</h1><p>This page decoded the URL itself. No search or database lookup was used.</p></div>
       <section className="card bundle-hero"><span className={`status-pill status-${expired ? 'block' : 'pass'}`}>{expired ? 'Expired' : 'Active'}</span><p className="reference">{bundle.ref}</p><p className="expiry">Expires {new Date(bundle.expiresAt).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</p></section>
       <section className="card"><h2>Records in scope</h2><ul className="plain-list">{bundle.documents.map((source) => <li key={source}>{sourceLabels[source]}</li>)}</ul></section>

@@ -24,7 +24,7 @@ export default function GoalPage() {
   }
 
   return (
-    <main className="page-shell">
+    <main className="page-shell landing-shell">
       <ScreenIntro step="1 of 8 · Your goal" title="Catch record problems before they stop you.">
         Tell us what you want to apply for. We will check the same details across your records.
       </ScreenIntro>

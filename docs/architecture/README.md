@@ -15,6 +15,7 @@ how the features compose.
 | 04 | [Contact surface](04-contact-surface.md) | — | Specified |
 | 05 | [Document bundle & officer review](05-document-bundle.md) | `/bundle` | Partial |
 | 06 | [Benefit routing & DBT reasons](06-benefit-routing.md) | `/money` | Built |
+| 07 | [Access receipts & turnaround](07-access-receipts.md) | — | Specified |
 | 00 | [System architecture](00-system-architecture.md) | — | — |
 
 ## Status vocabulary

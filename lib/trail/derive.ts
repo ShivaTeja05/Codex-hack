@@ -104,7 +104,9 @@ export function overdueDays(
   slaDays: number,
   now: number,
 ): number {
-  return Math.max(0, Math.ceil(totalMs(instance, now) / DAY_MS) - slaDays);
+  // Round, not ceil: seeded timestamps driftpast the day boundary and
+  // ceil() would report an extra overdue day.
+  return Math.max(0, Math.round(totalMs(instance, now) / DAY_MS) - slaDays);
 }
 
 export function days(value: number): number {

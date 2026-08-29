@@ -4,7 +4,7 @@ export function JourneyHeader() {
   return (
     <header className="site-header">
       <Link href="/home" className="brand" aria-label="Milaan home">
-        <span className="brand-mark">M</span>
+        <span className="brand-mark">NT</span>
         <span>
           <strong>Nagrik Trail</strong>
           <small>independent prototype</small>

@@ -5,8 +5,8 @@ import { SessionProvider } from '@/lib/state';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Milaan — understand your connected records',
-  description: 'A privacy-safe synthetic prototype for understanding record differences before an application.',
+  title: 'Nagrik Trail — see where your application actually is',
+  description: 'An independent prototype. Application status computed from document access events, not declared by an officer. Synthetic data only.',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

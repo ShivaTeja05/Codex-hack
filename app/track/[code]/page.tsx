@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { days, deriveSteps, summarise } from '@/lib/trail/derive';
+
+const dayLabel = (value: number) => `${value} day${value === 1 ? '' : 's'}`;
 import {
   findApplication,
   findScheme,
@@ -84,7 +86,7 @@ export default function TrackPage({ params }: { params: { code: string } }) {
               <div>
                 <dt>For</dt>
                 <dd>
-                  {days(current.totalMs)} days{' '}
+                  {dayLabel(days(current.totalMs))}{' '}
                   <span className="tr-soft">(this step usually takes {current.step.slaDays})</span>
                 </dd>
               </div>
@@ -112,7 +114,7 @@ export default function TrackPage({ params }: { params: { code: string } }) {
               <p className="tr-office">{item.step.officeName}</p>
 
               {item.status === 'DONE' ? (
-                <p className="tr-done">Done in {days(item.totalMs)} days</p>
+                <p className="tr-done">Done in {dayLabel(days(item.totalMs))}</p>
               ) : null}
               <TimeBar item={item} />
 
@@ -135,7 +137,12 @@ export default function TrackPage({ params }: { params: { code: string } }) {
         <h2 className="tr-h2">Who has opened your documents</h2>
         <ul className="tr-access">
           {store.events
-            .filter((event) => event.shareCode === shareCode.code && event.documentId)
+            .filter(
+              (event) =>
+                event.documentId &&
+                (event.applicationId === application.id ||
+                  event.shareCode === shareCode.code),
+            )
             .slice(-6)
             .reverse()
             .map((event) => (

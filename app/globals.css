@@ -532,3 +532,32 @@ h2 { margin: 0; font-family: Georgia, serif; font-size: 24px; font-weight: 500; 
   .tr-officer-grid { grid-template-columns: 1fr 250px; align-items: start; }
   .tr-now dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* ---- Chrome retuned to the Nagrik Trail palette (CONTEXT.md §14) ---- */
+:root {
+  --paper: #F7F7F4;
+  --ink: #16161A;
+  --muted: #6E6E68;
+  --line: #DEDDD6;
+  --surface: #FFFFFF;
+  --plum: #2C4A7C;        /* stamp-pad indigo */
+  --plum-dark: #21395F;
+  --coral: #C2323C;       /* red tape */
+}
+html, body { background: #F7F7F4; }
+
+.prototype-banner {
+  color: #16161A; background: #F0EFE9;
+  border-bottom: 1px solid #DEDDD6; letter-spacing: 0;
+}
+.prototype-banner span { color: #C2323C; }
+
+.site-header { background: transparent; border-bottom: 1px solid #DEDDD6; }
+.brand-mark {
+  background: #C2323C; border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 15px; font-weight: 700; letter-spacing: -.02em;
+}
+.brand strong { font-family: Georgia, 'IBM Plex Serif', serif; letter-spacing: -.01em; }
+.brand small { letter-spacing: .02em; text-transform: none; }
+.site-nav a { color: #2C4A7C; }

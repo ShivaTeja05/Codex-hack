@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { commitDelta } from '@/lib/trail/commit';
 import { checkAccess } from '@/lib/trail/anomaly';
 import {
   findDocument,
@@ -68,16 +69,18 @@ export async function GET(
 
   if (location) markStepOpened(location.stepInstanceId);
 
-  return NextResponse.json({
-    document: {
-      id: document.id,
-      plainName: document.plainName,
-      issuer: document.issuer,
-      issuedOn: document.issuedOn,
-      refMasked: document.refMasked,
-      fields: document.fields,
-    },
-    unusual: decision.unusual ?? null,
-    loggedAs: seenBefore ? 'DOC_REOPENED' : 'DOC_OPENED',
-  });
+  return commitDelta(
+    NextResponse.json({
+      document: {
+        id: document.id,
+        plainName: document.plainName,
+        issuer: document.issuer,
+        issuedOn: document.issuedOn,
+        refMasked: document.refMasked,
+        fields: document.fields,
+      },
+      unusual: decision.unusual ?? null,
+      loggedAs: seenBefore ? 'DOC_REOPENED' : 'DOC_OPENED',
+    }),
+  );
 }

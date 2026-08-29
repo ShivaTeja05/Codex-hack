@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { commitDelta } from '@/lib/trail/commit';
 import { createApplication, findShareCode, recordEvent } from '@/lib/trail/store';
 
 export const dynamic = 'force-dynamic';
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unknown scheme.' }, { status: 400 });
   }
 
-  return NextResponse.json({ ok: true, code: created.code });
+  return commitDelta(NextResponse.json({ ok: true, code: created.code }));
 }
 
 export async function DELETE(request: Request) {
@@ -43,5 +44,5 @@ export async function DELETE(request: Request) {
     actorType: 'CITIZEN',
     actorLabel: 'Citizen',
   });
-  return NextResponse.json({ ok: true });
+  return commitDelta(NextResponse.json({ ok: true }));
 }

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { commitDelta } from '@/lib/trail/commit';
 import { resolveFlag } from '@/lib/trail/store';
 
 export const dynamic = 'force-dynamic';
@@ -17,5 +18,5 @@ export async function POST(request: Request) {
   if (!result) {
     return NextResponse.json({ error: 'Unknown code.' }, { status: 400 });
   }
-  return NextResponse.json({ ok: true });
+  return commitDelta(NextResponse.json({ ok: true }));
 }

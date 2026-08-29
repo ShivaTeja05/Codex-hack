@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { commitDelta } from '@/lib/trail/commit';
 import {
   findApplication,
   findDocument,
@@ -59,5 +60,5 @@ export async function POST(request: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true });
+  return commitDelta(NextResponse.json({ ok: true }));
 }

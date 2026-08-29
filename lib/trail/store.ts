@@ -1,4 +1,12 @@
+import { cookies } from 'next/headers';
 import * as seed from './seed';
+import {
+  DELTA_COOKIE,
+  decodeDelta,
+  emptyDelta,
+  mergeDelta,
+  type Delta,
+} from './delta';
 import type {
   Application,
   ApplicationStep,
@@ -47,13 +55,69 @@ function fresh(): TrailState {
 // Survives hot reload in dev and warm invocations in production.
 const globalRef = globalThis as unknown as { __trailState?: TrailState };
 
+/**
+ * Mutations written while handling the current request. They go into the
+ * cookie so the next request sees them even if a different instance serves it.
+ */
+let pending: Delta = emptyDelta();
+
+export function pendingDelta(): Delta {
+  return pending;
+}
+
+export function clearPending(): void {
+  pending = emptyDelta();
+}
+
+/** The delta carried by the caller's cookie, if we are inside a request. */
+function cookieDelta(): Delta {
+  try {
+    return decodeDelta(cookies().get(DELTA_COOKIE)?.value);
+  } catch {
+    // Outside a request scope (tests, module init) there is no cookie store.
+    return emptyDelta();
+  }
+}
+
+/** Everything this request should see: cookie delta plus this request's writes. */
+export function effectiveDelta(): Delta {
+  return mergeDelta(cookieDelta(), pending);
+}
+
+function applyDelta(target: TrailState, delta: Delta): void {
+  const known = new Set(target.events.map((event) => event.id));
+  for (const event of delta.e) if (!known.has(event.id)) target.events.push(event);
+
+  const knownFlags = new Set(target.flags.map((flag) => flag.id));
+  for (const flag of delta.f) if (!knownFlags.has(flag.id)) target.flags.push(flag);
+
+  for (const flag of target.flags) {
+    if (delta.r.includes(flag.id) && !flag.resolvedAt) {
+      flag.resolvedAt = new Date().toISOString();
+    }
+  }
+
+  for (const application of target.applications) {
+    for (const instance of application.steps) {
+      if (delta.o[instance.id] && !instance.firstOpenedAt) instance.firstOpenedAt = delta.o[instance.id];
+      if (delta.c[instance.id] && !instance.completedAt) instance.completedAt = delta.c[instance.id];
+      if (delta.n[instance.id] && !instance.enteredAt) instance.enteredAt = delta.n[instance.id];
+    }
+  }
+}
+
 export function state(): TrailState {
   if (!globalRef.__trailState) globalRef.__trailState = fresh();
-  return globalRef.__trailState;
+  const base = globalRef.__trailState;
+  // The global alone is not reliable across serverless instances, so overlay
+  // whatever the caller's cookie carries before anything reads it.
+  applyDelta(base, effectiveDelta());
+  return base;
 }
 
 export function resetState(): TrailState {
   globalRef.__trailState = fresh();
+  clearPending();
   return globalRef.__trailState;
 }
 
@@ -66,6 +130,7 @@ export function recordEvent(event: Omit<DocEvent, 'id' | 'ts'> & { ts?: string }
     ts: event.ts ?? new Date().toISOString(),
   };
   state().events.push(stored);
+  pending.e.push(stored);
   return stored;
 }
 
@@ -121,6 +186,7 @@ export function markStepOpened(stepInstanceId: string): void {
     const instance = application.steps.find((item) => item.id === stepInstanceId);
     if (instance && !instance.firstOpenedAt) {
       instance.firstOpenedAt = new Date().toISOString();
+      pending.o[instance.id] = instance.firstOpenedAt;
     }
   }
 }
@@ -145,6 +211,7 @@ export function resolveFlag(
   if (!flag) return { applicationId: shareCode.applicationId };
 
   flag.resolvedAt = new Date().toISOString();
+  pending.r.push(flag.id);
   recordEvent({
     eventType: 'DOC_REPLACED',
     documentId,
@@ -243,10 +310,16 @@ export function markStepCompleted(stepInstanceId: string): void {
     const index = application.steps.findIndex((item) => item.id === stepInstanceId);
     if (index === -1) continue;
     const instance = application.steps[index];
-    if (!instance.completedAt) instance.completedAt = new Date().toISOString();
+    if (!instance.completedAt) {
+      instance.completedAt = new Date().toISOString();
+      pending.c[instance.id] = instance.completedAt;
+    }
 
     // The next step enters the queue the moment this one completes.
     const next = application.steps[index + 1];
-    if (next && !next.enteredAt) next.enteredAt = new Date().toISOString();
+    if (next && !next.enteredAt) {
+      next.enteredAt = new Date().toISOString();
+      pending.n[next.id] = next.enteredAt;
+    }
   }
 }

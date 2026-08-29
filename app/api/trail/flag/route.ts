@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server';
-import { findDocument, findShareCode, recordEvent, state, stepForDocument } from '@/lib/trail/store';
+import { commitDelta } from '@/lib/trail/commit';
+import {
+  findDocument,
+  findShareCode,
+  pendingDelta,
+  recordEvent,
+  state,
+  stepForDocument,
+} from '@/lib/trail/store';
 import type { FlagReason } from '@/lib/trail/types';
 
 export const dynamic = 'force-dynamic';
@@ -25,7 +33,7 @@ export async function POST(request: Request) {
   const location = stepForDocument(shareCode.applicationId ?? '', document.id);
   const officer = body.office ?? location?.officeName ?? 'Reviewing office';
 
-  state().flags.push({
+  const created = {
     id: `flag-${Date.now()}`,
     documentId: document.id,
     applicationId: shareCode.applicationId ?? '',
@@ -34,7 +42,9 @@ export async function POST(request: Request) {
     reason: body.reason ?? 'MISMATCH',
     comment: body.comment.trim(),
     createdAt: new Date().toISOString(),
-  });
+  };
+  state().flags.push(created);
+  pendingDelta().f.push(created);
 
   recordEvent({
     eventType: 'DOC_FLAGGED',
@@ -48,5 +58,5 @@ export async function POST(request: Request) {
     meta: { reason: body.reason ?? 'MISMATCH', comment: body.comment.trim() },
   });
 
-  return NextResponse.json({ ok: true });
+  return commitDelta(NextResponse.json({ ok: true }));
 }

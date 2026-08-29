@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, type ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
 import { getCitizenProfile } from '@/lib/seed/profiles';
 import { useSession } from '@/lib/state';
 import type { CitizenProfile } from '@/lib/types';
@@ -11,18 +10,19 @@ export function SessionGate({
 }: {
   children(profile: CitizenProfile): ReactNode;
 }) {
-  const router = useRouter();
-  const { citizenId } = useSession();
+  const { citizenId, setCitizenId } = useSession();
 
   useEffect(() => {
-    if (!citizenId) router.replace('/');
-  }, [citizenId, router]);
+    // The Nagrik Trail landing links straight in, so open the sample record
+    // rather than bouncing a reviewer back to a login they did not ask for.
+    if (!citizenId) setCitizenId('demo-priya');
+  }, [citizenId, setCitizenId]);
 
   if (!citizenId) {
     return (
       <main className="page-shell">
         <div className="card empty-state">
-          <p>Opening the simulated login…</p>
+          <p>Opening the sample record…</p>
         </div>
       </main>
     );

@@ -6,18 +6,19 @@ export function JourneyHeader() {
       <Link href="/home" className="brand" aria-label="Milaan home">
         <span className="brand-mark">M</span>
         <span>
-          <strong>Milaan</strong>
-          <small>check before you apply</small>
+          <strong>Nagrik Trail</strong>
+          <small>independent prototype</small>
         </span>
       </Link>
       <nav className="site-nav" aria-label="Main navigation">
-        <Link href="/home">Home</Link>
+        <Link href="/">Home</Link>
+        <Link href="/track/TRL-4K9-2XQ">Track</Link>
         <Link href="/check">Check</Link>
         <Link href="/map">Map</Link>
         <Link href="/money">Money</Link>
         <Link href="/records">Records</Link>
         <Link href="/issues">Issues</Link>
-        <Link href="/real">What&apos;s real?</Link>
+        <Link href="/whats-real">What&apos;s real?</Link>
       </nav>
     </header>
   );

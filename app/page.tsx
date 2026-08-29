@@ -1,62 +1,68 @@
-'use client';
+import Link from 'next/link';
+import { PRIMARY_CODE, FLAGGED_CODE } from '@/lib/trail/seed';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { MockChip } from '@/components/MockChip';
-import { ReadonlyOtp, ReadonlyPhone } from '@/components/ReadonlyOtp';
-import { useSession } from '@/lib/state';
-
-export default function LoginPage() {
-  const router = useRouter();
-  const { setCitizenId, setRevealed } = useSession();
-  const [step, setStep] = useState<'phone' | 'otp'>('phone');
-
-  function enterDemo(citizenId: string) {
-    setCitizenId(citizenId);
-    setRevealed(false);
-    router.push('/check');
-  }
-
+export default function Landing() {
   return (
-    <main className="login-shell">
-      <section className="login-copy">
-        <p className="eyebrow">Milaan · record clarity</p>
-        <h1>See what could stop your application.</h1>
-        <p>Compare fictional records, find contradictions and understand the next action before a delay costs money.</p>
-      </section>
-      <section className="card login-card" aria-label="Simulated login">
-        <div className="card-heading">
-          <div>
-            <p className="eyebrow">Step {step === 'phone' ? '1' : '2'} of 2</p>
-            <h2>{step === 'phone' ? 'Use the sample number' : 'Check the sample OTP'}</h2>
-          </div>
-          <MockChip>Simulated</MockChip>
+    <main className="tr-shell">
+      <p className="tr-eyebrow">Nagrik Trail — independent prototype, synthetic data</p>
+      <h1 className="tr-h1">Your file is not lost. It is at a desk. We can tell you which one.</h1>
+
+      <div className="tr-card" style={{ marginTop: 18 }}>
+        <p className="tr-soft" style={{ marginBottom: 8 }}>What a scholarship applicant sees for eleven weeks:</p>
+        <p style={{ margin: 0, fontSize: 20, textDecoration: 'line-through', color: '#6E6E68' }}>Under Process</p>
+        <p style={{ margin: '14px 0 0', fontSize: 17, fontWeight: 600, lineHeight: 1.35 }}>
+          Checking your Class 12 marksheet · District Education Office, Kalaburagi · 4 days
+          <span className="tr-soft" style={{ display: 'block', marginTop: 4 }}>this step usually takes 3</span>
+        </p>
+      </div>
+
+      <p className="tr-note" style={{ marginTop: 18 }}>
+        Status systems fail because they need an officer to remember to click &ldquo;mark as done&rdquo;.
+        So we instrument the document, not the officer. A document is only rendered at the end of a
+        logged fetch — <strong>opening it is the event</strong>. Status is computed from that stream,
+        never declared by a human.
+      </p>
+
+      <div className="tr-actions">
+        <Link className="tr-btn" href={`/track/${PRIMARY_CODE}`}>See a live application</Link>
+        <Link className="tr-btn tr-btn-ghost" href={`/officer/${PRIMARY_CODE}`}>Review as an officer</Link>
+        <Link className="tr-btn tr-btn-ghost" href={`/track/${FLAGGED_CODE}`}>See one that needs action</Link>
+      </div>
+
+      <div className="tr-card">
+        <h2 className="tr-h2">Demo details — no login needed</h2>
+        <ul style={{ display: 'grid', gap: 7, margin: 0, paddingLeft: 18, fontSize: 14 }}>
+          <li>Tracking code: <strong className="tr-mono">{PRIMARY_CODE}</strong></li>
+          <li>Needs-action code: <strong className="tr-mono">{FLAGGED_CODE}</strong></li>
+          <li>Citizen: Meena Sabannavar (fictional)</li>
+        </ul>
+        <p className="tr-soft" style={{ marginTop: 12 }}>
+          To see the architecture work: open the officer view in one tab, open a document, then
+          reload the citizen view in another tab. Nobody marked anything as done.
+        </p>
+      </div>
+
+      <div className="tr-card">
+        <h2 className="tr-h2">Before you apply</h2>
+        <p style={{ margin: '0 0 12px', fontSize: 14.5, lineHeight: 1.5 }}>
+          The same engine checks your records against each other before submission, so a
+          contradiction is caught at typing time rather than six weeks later.
+        </p>
+        <div className="tr-actions" style={{ marginTop: 0 }}>
+          <Link className="tr-btn tr-btn-ghost" href="/check">Pre-submission check</Link>
+          <Link className="tr-btn tr-btn-ghost" href="/map">Linkage map</Link>
+          <Link className="tr-btn tr-btn-ghost" href="/money">Where money goes</Link>
         </div>
-        {step === 'phone' ? (
-          <>
-            <ReadonlyPhone />
-            <button className="primary-button" type="button" onClick={() => setStep('otp')}>Send OTP</button>
-          </>
-        ) : (
-          <>
-            <ReadonlyOtp />
-            <button className="primary-button" type="button" onClick={() => enterDemo('demo-priya')}>Verify</button>
-            <button className="link-button" type="button" onClick={() => setStep('phone')}>Back</button>
-          </>
-        )}
-        <div className="persona-picker">
-          <p className="persona-title">Skip the login. Open a sample record:</p>
-          <button className="persona-button" type="button" onClick={() => enterDemo('demo-priya')}>
-            <strong>Priya</strong>
-            <small>3 rules block her scholarship. Two are fixable.</small>
-          </button>
-          <button className="persona-button" type="button" onClick={() => enterDemo('demo-arun')}>
-            <strong>Arun</strong>
-            <small>Nothing blocks his. See what &ldquo;ready&rdquo; looks like.</small>
-          </button>
-        </div>
-        <p className="simulation-note">simulated login · no real Aadhaar or OTP is used</p>
-      </section>
+      </div>
+
+      <div className="tr-actions">
+        <Link className="tr-btn tr-btn-ghost" href="/whats-real">What is real and what is mocked</Link>
+      </div>
+
+      <p className="tr-soft" style={{ marginTop: 22 }}>
+        Independent prototype. Not a government product, not affiliated with any government body.
+        All data is synthetic. No live government system is contacted.
+      </p>
     </main>
   );
 }

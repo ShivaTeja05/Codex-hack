@@ -63,7 +63,7 @@ CITIZEN                          OFFICER
    |     and what to do next        |
 ```
 
-Neither code is stored by Milaan. Each is **self-contained, signed and
+Neither code is stored by OpenTrail. Each is **self-contained, signed and
 expiring**. The officer can only ever see a bundle a citizen pushed to them.
 
 ## Data model

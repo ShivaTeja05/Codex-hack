@@ -15,7 +15,7 @@ const tierCopy: Record<LinkageTier, { eyebrow: string; heading: string; blurb: s
     eyebrow: 'Confirmed',
     heading: 'You gave us these, so we can read them.',
     blurb:
-      'Milaan compares these against each other. Everything on the pre-submission check comes from here.',
+      'OpenTrail compares these against each other. Everything on the pre-submission check comes from here.',
   },
   probable: {
     eyebrow: 'Probable',
@@ -59,7 +59,7 @@ function LinkageCard({ item }: { item: MappedLinkage }) {
         <summary className="text-link">The endpoint that would answer this properly</summary>
         <p className="contract-body">{item.probeContract}</p>
         <p className="contract-note">
-          Not implemented. Nothing in Milaan calls this — it is the integration a department would
+          Not implemented. Nothing in OpenTrail calls this — it is the integration a department would
           build. It answers yes or no and returns no data, which is the pattern India already uses
           for consent-bound sharing.
         </p>

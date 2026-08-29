@@ -57,7 +57,7 @@ export const citizens: Citizen[] = [
       {
         source: 'applicationForm',
         label: 'Synthetic scholarship form',
-        issuer: 'Milaan local demo',
+        issuer: 'OpenTrail local demo',
         provenance: 'uploaded',
         issuedOn: '2026-08-27',
         fields: {
@@ -122,7 +122,7 @@ export const citizens: Citizen[] = [
       {
         source: 'applicationForm',
         label: 'Synthetic scholarship form',
-        issuer: 'Milaan local demo',
+        issuer: 'OpenTrail local demo',
         provenance: 'uploaded',
         issuedOn: '2026-08-27',
         fields: {

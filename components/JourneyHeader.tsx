@@ -3,10 +3,10 @@ import Link from 'next/link';
 export function JourneyHeader() {
   return (
     <header className="site-header">
-      <Link href="/" className="brand" aria-label="Nagrik Trail home">
-        <span className="brand-mark">NT</span>
+      <Link href="/" className="brand" aria-label="OpenTrail home">
+        <span className="brand-mark">OT</span>
         <span>
-          <strong>Nagrik Trail</strong>
+          <strong>OpenTrail</strong>
           <small>independent prototype</small>
         </span>
       </Link>

@@ -4,7 +4,7 @@ import { PRIMARY_CODE, FLAGGED_CODE } from '@/lib/trail/seed';
 export default function Landing() {
   return (
     <main className="tr-shell">
-      <p className="tr-eyebrow">Nagrik Trail — independent prototype, synthetic data</p>
+      <p className="tr-eyebrow">OpenTrail — independent prototype, synthetic data</p>
       <h1 className="tr-h1">Your file is not lost. It is at a desk. We can tell you which one.</h1>
 
       <div className="tr-card" style={{ marginTop: 18 }}>

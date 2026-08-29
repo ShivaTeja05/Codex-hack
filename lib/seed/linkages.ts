@@ -3,7 +3,7 @@ import type { Citation, RecordSource } from '@/lib/types';
 /**
  * A domain a citizen may be connected to.
  *
- * `probeContract` is the endpoint a department would implement for Milaan to
+ * `probeContract` is the endpoint a department would implement for OpenTrail to
  * answer this honestly. It is written as a contract, not a wish: consent-bound,
  * yes/no, returning no data. Nothing calls it today — that is the point.
  */
@@ -87,7 +87,7 @@ export const linkageDomains: LinkageDomain[] = [
     confirmedBy: [],
     suggestedBy: ['telecom', 'operator'],
     probeContract:
-      'TAFCOP already answers this for the citizen. Milaan should link out to it, not copy it. No new endpoint is required.',
+      'TAFCOP already answers this for the citizen. OpenTrail should link out to it, not copy it. No new endpoint is required.',
   },
   {
     domain: 'pan',

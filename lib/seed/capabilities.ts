@@ -64,7 +64,7 @@ export const capabilities: CapabilityDisclosure[] = [
   {
     capability: 'DigiLocker documents',
     status: 'mocked',
-    reason: 'The list is local synthetic data. Outbound links open DigiLocker; Milaan never fetches a file.',
+    reason: 'The list is local synthetic data. Outbound links open DigiLocker; OpenTrail never fetches a file.',
   },
   {
     capability: 'Government issue reporting',

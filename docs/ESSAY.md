@@ -1,4 +1,4 @@
-# Nagrik Trail — Instrument the Document, Not the Officer
+# OpenTrail — Instrument the Document, Not the Officer
 
 ## The one label that hides everything
 
@@ -14,7 +14,7 @@ There is a quiet piece of technology that already solves a version of this probl
 
 When you send a tracked email, a tiny invisible pixel is embedded in the message. The moment the recipient opens the mail, their mail client loads that pixel, and the sender learns — silently, with zero extra effort from either party — *when* it was opened. If the recipient opens it again the next morning, that reopen is logged too. Neither the sender nor the receiver has to press a "I have read this" button. **The act of consuming the content is itself the signal.** Reading the email *is* the event.
 
-Nagrik Trail applies exactly this principle to government documents.
+OpenTrail applies exactly this principle to government documents.
 
 Documents are never emailed as attachments or handed over as static PDFs. Every document a citizen submits is fetched live from a mock DigiLocker through a single share code. When an officer opens that document to do their job, the open *is* the event — a timestamped record of who accessed it, when, for which application, and at which step. A reopen is a second event. A verification is another. A flag with a correction request is another still. No one has to remember to report anything. **The status of an application stops being a column a human sets, and becomes a value the system computes from a continuous stream of events.**
 
@@ -62,7 +62,7 @@ Every share code is scoped: only the documents the citizen selected, only for th
 
 > **⚠ 21 Aug, 4:41 PM** — An office outside this application tried to open your ID. Blocked.
 
-We are careful about the claim here, because a careful claim is a stronger one. **Rate limiting surfaces and slows repeated misuse; it does not stop a single first-time access of a leaked document.** But by making every access visible to the person the document belongs to — and by capping how many times a code can be used — it converts silent misuse into something that leaves a trail and hits a ceiling. People have a right to know who is looking at their identity documents. Nagrik Trail gives them that log by default.
+We are careful about the claim here, because a careful claim is a stronger one. **Rate limiting surfaces and slows repeated misuse; it does not stop a single first-time access of a leaked document.** But by making every access visible to the person the document belongs to — and by capping how many times a code can be used — it converts silent misuse into something that leaves a trail and hits a ceiling. People have a right to know who is looking at their identity documents. OpenTrail gives them that log by default.
 
 ## Guiding the citizen to the right door — the UK approach
 
@@ -70,10 +70,10 @@ There is one problem that sits upstream of all of this, and it is the one that q
 
 The United Kingdom's GOV.UK service model answers this well, and it is worth borrowing wholesale. GOV.UK does not drop a citizen onto a wall of forms and departmental jargon. It asks **one plain-language question at a time** — are you studying, what year, which state, roughly what is your family's yearly income — and routes the person, step by step, to the single right scheme and the single right form. Complexity is absorbed by the system, not offloaded onto the citizen.
 
-Nagrik Trail wraps its tracking engine in exactly this kind of guided journey. A rural student who does not know where to begin answers a few simple questions and is routed to the scheme that fits and processes fastest — and then, seamlessly, into the very submission flow that generates their trackable share code. This is where the whole design closes its loop: **the guided journey gets a person from confusion to the correct application, and the tracking layer carries them from application to a transparent, accountable outcome.** The upstream problem of discovery and the downstream problem of opacity are solved by the same system, because they were always the same problem — a citizen unable to see the process they are inside.
+OpenTrail wraps its tracking engine in exactly this kind of guided journey. A rural student who does not know where to begin answers a few simple questions and is routed to the scheme that fits and processes fastest — and then, seamlessly, into the very submission flow that generates their trackable share code. This is where the whole design closes its loop: **the guided journey gets a person from confusion to the correct application, and the tracking layer carries them from application to a transparent, accountable outcome.** The upstream problem of discovery and the downstream problem of opacity are solved by the same system, because they were always the same problem — a citizen unable to see the process they are inside.
 
 ## What better looks like
 
-Nagrik Trail does not promise to make a slow department fast. It makes an honest, smaller promise: **it shows exactly where the time goes, to the citizen, to the department, and to the public — and it makes documents observable without asking anyone to change how they work.** It borrows a trick from email tracking to turn the ordinary act of opening a file into data; it turns that data into real turnaround times a government can act on; it turns the same data into a status the citizen can finally read and an access log that guards against misuse; and it puts a GOV.UK-style guide at the front so the people most often left out can find the right door in the first place.
+OpenTrail does not promise to make a slow department fast. It makes an honest, smaller promise: **it shows exactly where the time goes, to the citizen, to the department, and to the public — and it makes documents observable without asking anyone to change how they work.** It borrows a trick from email tracking to turn the ordinary act of opening a file into data; it turns that data into real turnaround times a government can act on; it turns the same data into a status the citizen can finally read and an access log that guards against misuse; and it puts a GOV.UK-style guide at the front so the people most often left out can find the right door in the first place.
 
-One label — "Under Process" — hides the whole story. Nagrik Trail tells it.
+One label — "Under Process" — hides the whole story. OpenTrail tells it.

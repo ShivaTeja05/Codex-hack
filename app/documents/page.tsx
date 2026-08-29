@@ -23,7 +23,7 @@ export default function DocumentsPage() {
               </article>
             ))}
           </div>
-          <p className="ownership-note">Milaan does not fetch or display the file. DigiLocker remains the document owner.</p>
+          <p className="ownership-note">OpenTrail does not fetch or display the file. DigiLocker remains the document owner.</p>
           <Link className="back-link" href="/home">← Back to home</Link>
         </main>
       )}

@@ -1,4 +1,4 @@
-# CONTEXT.md — Nagrik Trail
+# CONTEXT.md — OpenTrail
 
 **Read this fully before writing any code. Follow it exactly. Do not add features that are not listed here.**
 

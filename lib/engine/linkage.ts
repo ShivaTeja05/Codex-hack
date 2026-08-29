@@ -55,7 +55,7 @@ export function buildLinkageMap(citizen: Citizen, activity: AuthEvent[]): Mapped
           tier: 'confirmed',
           finding: `You supplied ${confirming
             .map((source) => sourceLabels[source])
-            .join(' and ')}, so Milaan can read this and compare it.`,
+            .join(' and ')}, so OpenTrail can read this and compare it.`,
           evidence: 'Confirmed from a record you provided.',
           evidenceSource: domain.source,
         };
@@ -68,7 +68,7 @@ export function buildLinkageMap(citizen: Citizen, activity: AuthEvent[]): Mapped
           tier: 'probable',
           finding: `${event.agency} authenticated this identity on ${event.when}. An organisation that authenticates you almost always holds a record about you.`,
           evidence:
-            'Inferred from authentication history. This proves contact, not content — Milaan cannot see what the record says.',
+            'Inferred from authentication history. This proves contact, not content — OpenTrail cannot see what the record says.',
           evidenceSource: AUTH_HISTORY,
         };
       }
@@ -76,7 +76,7 @@ export function buildLinkageMap(citizen: Citizen, activity: AuthEvent[]): Mapped
       return {
         ...domain,
         tier: 'unknowable',
-        finding: 'Milaan cannot tell you whether this is connected to you.',
+        finding: 'OpenTrail cannot tell you whether this is connected to you.',
         evidence:
           'No authority publishes this. Departments do not report linkages to UIDAI, and UIDAI does not store them — a deliberate privacy choice with an unintended cost.',
         evidenceSource: UIDAI_NO_REGISTRY,

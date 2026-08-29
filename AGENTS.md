@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Read `docs/CONTEXT.md` before any task. It is the full specification for Nagrik Trail.
+Read `docs/CONTEXT.md` before any task. It is the full specification for OpenTrail.
 
 ## Build order
 `lib/trail/derive.ts` → `lib/trail/types.ts` + `lib/trail/seed.ts` → `app/api/trail/doc` endpoint → `/track` → `/officer` → consistency + apply + insights + journey → honesty page.

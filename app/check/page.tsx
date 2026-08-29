@@ -64,7 +64,7 @@ function CorrectionCard({
       </div>
 
       <p className="fix-note">
-        Milaan does not decide {correction.disagreementNoun}. It matches every self-declared record
+        OpenTrail does not decide {correction.disagreementNoun}. It matches every self-declared record
         to the value an issuer has already signed.
       </p>
 
@@ -135,7 +135,7 @@ function CheckContent({ citizenId }: { citizenId: string }) {
   return (
     <main className="page-shell wide-shell">
       <ScreenIntro step="Before you apply" title={entitlement.name}>
-        Milaan reads the synthetic records you are about to submit and checks them against this
+        OpenTrail reads the synthetic records you are about to submit and checks them against this
         scheme&apos;s rules — before the portal does.
       </ScreenIntro>
 
@@ -205,7 +205,7 @@ function CheckContent({ citizenId }: { citizenId: string }) {
               <h3>{rule.description}</h3>
               <p className="rule-message">{rule.message}</p>
               <p>
-                Milaan does not decide your case. If the figure on the certificate is out of date or
+                OpenTrail does not decide your case. If the figure on the certificate is out of date or
                 wrong, the issuing office reissues it. If it is correct, this scheme is not open to
                 you on today&apos;s records, and applying will cost you the processing window.
               </p>
@@ -284,7 +284,7 @@ function CheckContent({ citizenId }: { citizenId: string }) {
       </section>
 
       <p className="ownership-note">
-        Corrections apply to this session&apos;s in-memory copy only. Milaan cannot write to any
+        Corrections apply to this session&apos;s in-memory copy only. OpenTrail cannot write to any
         government record — see{' '}
         <Link className="text-link" href="/real">
           what&apos;s real

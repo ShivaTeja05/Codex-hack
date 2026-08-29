@@ -13,7 +13,7 @@ export function SessionGate({
   const { citizenId, setCitizenId } = useSession();
 
   useEffect(() => {
-    // The Nagrik Trail landing links straight in, so open the sample record
+    // The OpenTrail landing links straight in, so open the sample record
     // rather than bouncing a reviewer back to a login they did not ask for.
     if (!citizenId) setCitizenId('demo-priya');
   }, [citizenId, setCitizenId]);

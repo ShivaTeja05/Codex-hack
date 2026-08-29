@@ -42,7 +42,7 @@ obligationDetail:
   'The Telecommunications Act 2023 caps connections at 9 ' +
   '(6 in Jammu & Kashmir, Assam and the North-East).',
 probeContract:
-  'TAFCOP already answers this for the citizen. Milaan should link out to it, ' +
+  'TAFCOP already answers this for the citizen. OpenTrail should link out to it, ' +
   'not copy it. No new endpoint is required.',
 ```
 

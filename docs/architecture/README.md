@@ -1,4 +1,4 @@
-# Milaan — feature architecture
+# OpenTrail — feature architecture
 
 One document per feature. Each is written so it can be built without reading
 the others, and each ends with the integration a department would have to

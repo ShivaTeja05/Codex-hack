@@ -441,7 +441,7 @@ h2 { margin: 0; font-family: Georgia, serif; font-size: 24px; font-weight: 500; 
 .reason-steps { display: grid; gap: 8px; margin: 0 0 14px; padding-left: 20px; color: var(--muted); font-size: 14.5px; }
 .reason-steps li { padding-left: 4px; }
 
-/* ================= Nagrik Trail ================= */
+/* ================= OpenTrail ================= */
 .tr-shell {
   --paper: #F7F7F4; --tr-ink: #16161A; --tr-muted: #6E6E68; --tr-rule: #DEDDD6;
   --thread: #C2323C; --stamp: #2C4A7C; --queue: #C9C8C1;
@@ -531,7 +531,7 @@ h2 { margin: 0; font-family: Georgia, serif; font-size: 24px; font-weight: 500; 
   .tr-now dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-/* ---- Chrome retuned to the Nagrik Trail palette (CONTEXT.md §14) ---- */
+/* ---- Chrome retuned to the OpenTrail palette (CONTEXT.md §14) ---- */
 :root {
   --paper: #F7F7F4;
   --ink: #16161A;

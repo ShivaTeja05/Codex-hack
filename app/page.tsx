@@ -43,20 +43,30 @@ export default function Landing() {
       </div>
 
       <div className="tr-card">
-        <h2 className="tr-h2">Before you apply</h2>
+        <h2 className="tr-h2">Don&apos;t know where to start?</h2>
         <p style={{ margin: '0 0 12px', fontSize: 14.5, lineHeight: 1.5 }}>
-          The same engine checks your records against each other before submission, so a
-          contradiction is caught at typing time rather than six weeks later.
+          A rural student should not need to know which form to fill. Answer a few plain
+          questions and we route you to the right scheme — then into an application whose
+          documents are checked against each other before you submit, and which you can track
+          from the first day.
         </p>
         <div className="tr-actions" style={{ marginTop: 0 }}>
-          <Link className="tr-btn tr-btn-ghost" href="/check">Pre-submission check</Link>
-          <Link className="tr-btn tr-btn-ghost" href="/map">Linkage map</Link>
-          <Link className="tr-btn tr-btn-ghost" href="/money">Where money goes</Link>
+          <Link className="tr-btn" href="/journey">Find my scheme</Link>
+          <Link className="tr-btn tr-btn-ghost" href="/apply/ka-post-matric">Make a new application</Link>
         </div>
       </div>
 
-      <div className="tr-actions">
-        <Link className="tr-btn tr-btn-ghost" href="/whats-real">What is real and what is mocked</Link>
+      <div className="tr-card">
+        <h2 className="tr-h2">For departments and the public</h2>
+        <p style={{ margin: '0 0 12px', fontSize: 14.5, lineHeight: 1.5 }}>
+          The same event stream shows where the days go across every office — how much is
+          queue time before anyone opens a file versus real hands-on review. That is a
+          decision a department can act on.
+        </p>
+        <div className="tr-actions" style={{ marginTop: 0 }}>
+          <Link className="tr-btn tr-btn-ghost" href="/insights">See the bottleneck dashboard</Link>
+          <Link className="tr-btn tr-btn-ghost" href="/whats-real">What is real and what is mocked</Link>
+        </div>
       </div>
 
       <p className="tr-soft" style={{ marginTop: 22 }}>

@@ -329,3 +329,103 @@ export const flags: Flag[] = [
     createdAt: iso(3 * DAY - HOUR),
   },
 ];
+
+/* -------------------------------------------------------------------------- */
+/* Synthetic applications for /insights                                        */
+/*                                                                             */
+/* CONTEXT.md §13 asks for ~20 synthetic applications so the department        */
+/* dashboard shows real distributions and medians, not one data point. These   */
+/* are generated deterministically (a seeded RNG) so the demo is stable, and   */
+/* every one is fully completed so its per-step waiting/handling split is       */
+/* derived from timestamps by the same functions the citizen page uses. No     */
+/* aggregate is hardcoded — /insights computes medians from these rows.        */
+/* -------------------------------------------------------------------------- */
+
+/** Small deterministic PRNG so seeded timings never drift between loads. */
+function mulberry32(seed: number): () => number {
+  let a = seed;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * Per-step timing profile in days: how long a file typically waits in the
+ * queue before anyone opens it, and how long an officer then handles it.
+ * The bottleneck steps (marksheet verification; village-officer inspection)
+ * are deliberately queue-dominated — that is the story the dashboard tells.
+ */
+const TIMING: Record<string, { wait: number; handle: number }[]> = {
+  'ka-post-matric': [
+    { wait: 0.2, handle: 0.3 }, // 1 received
+    { wait: 0.9, handle: 1.0 }, // 2 id + bank
+    { wait: 2.6, handle: 1.1 }, // 3 domicile
+    { wait: 1.3, handle: 3.1 }, // 4 income
+    { wait: 1.1, handle: 1.2 }, // 5 category
+    { wait: 6.7, handle: 1.2 }, // 6 marksheet  ← queue-dominated bottleneck
+    { wait: 1.6, handle: 1.6 }, // 7 payment
+  ],
+  'income-cert': [
+    { wait: 0.2, handle: 0.3 }, // 1 received
+    { wait: 0.8, handle: 1.0 }, // 2 id
+    { wait: 5.6, handle: 3.4 }, // 3 village inspection ← bottleneck
+    { wait: 1.1, handle: 1.2 }, // 4 signing
+  ],
+};
+
+function jitter(base: number, rng: () => number): number {
+  // ±45% noise, floored so nothing is instantaneous.
+  const factor = 0.55 + rng() * 0.9;
+  return Math.max(0.05, base * factor);
+}
+
+function buildSynthetic(): Application[] {
+  const rng = mulberry32(20260829);
+  const plan: string[] = [
+    ...Array(13).fill('ka-post-matric'),
+    ...Array(5).fill('income-cert'),
+  ];
+  const apps: Application[] = [];
+
+  plan.forEach((schemeId, index) => {
+    const scheme = schemes.find((item) => item.id === schemeId)!;
+    const profile = TIMING[schemeId];
+    // Spread submissions across the last ~120 days.
+    let cursorMs = (25 + Math.floor(rng() * 95)) * DAY;
+    const id = `synthetic-${schemeId}-${index}`;
+    const steps: ApplicationStep[] = scheme.steps.map((wStep, sIndex) => {
+      const p = profile[sIndex] ?? { wait: 1, handle: 1 };
+      const waitMs = jitter(p.wait, rng) * DAY;
+      const handleMs = jitter(p.handle, rng) * DAY;
+      const enteredAt = cursorMs;
+      const firstOpenedAt = enteredAt - waitMs;
+      const completedAt = firstOpenedAt - handleMs;
+      cursorMs = completedAt; // next step enters when this one completes
+      return {
+        id: `${id}::${wStep.id}`,
+        applicationId: id,
+        workflowStepId: wStep.id,
+        enteredAt: iso(enteredAt),
+        firstOpenedAt: iso(firstOpenedAt),
+        completedAt: iso(completedAt),
+      };
+    });
+    apps.push({
+      id,
+      citizenId: 'synthetic',
+      schemeId,
+      shareCode: `SYNTH-${index}`,
+      submittedAt: steps[0].enteredAt!,
+      steps,
+    });
+  });
+
+  return apps;
+}
+
+/** 18 synthetic + the 2 real applications = 20 the dashboard aggregates over. */
+export const syntheticApplications: Application[] = buildSynthetic();

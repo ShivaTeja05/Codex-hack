@@ -1,6 +1,7 @@
 import * as seed from './seed';
 import type {
   Application,
+  ApplicationStep,
   Citizen,
   DocEvent,
   Flag,
@@ -122,6 +123,119 @@ export function markStepOpened(stepInstanceId: string): void {
       instance.firstOpenedAt = new Date().toISOString();
     }
   }
+}
+
+/**
+ * Resolve one flag under the same share code: the citizen replaced a single
+ * document, they did not restart the application. Writes DOC_REPLACED and
+ * clears the flag so the step derives back to IN_REVIEW.
+ */
+export function resolveFlag(
+  code: string,
+  documentId: string,
+): { applicationId?: string } | undefined {
+  const shareCode = findShareCode(code);
+  if (!shareCode) return undefined;
+  const flag = state().flags.find(
+    (item) =>
+      item.documentId === documentId &&
+      item.applicationId === shareCode.applicationId &&
+      !item.resolvedAt,
+  );
+  if (!flag) return { applicationId: shareCode.applicationId };
+
+  flag.resolvedAt = new Date().toISOString();
+  recordEvent({
+    eventType: 'DOC_REPLACED',
+    documentId,
+    applicationId: flag.applicationId,
+    stepId: flag.stepId,
+    shareCode: code,
+    actorType: 'CITIZEN',
+    actorLabel: state().citizen.name,
+  });
+  return { applicationId: shareCode.applicationId };
+}
+
+const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no O/0/I/1
+function randomCode(): string {
+  const block = () =>
+    Array.from({ length: 3 }, () =>
+      CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)],
+    ).join('');
+  return `TRL-${block()}-${block()}`;
+}
+
+const DAY = 86_400_000;
+
+/**
+ * Create a real, trackable application from selected documents. The new file
+ * enters at step 1 (received) and sits WAITING at step 2, exactly as a freshly
+ * submitted application would — the reviewer can then open documents in the
+ * officer view and watch the status advance.
+ */
+export function createApplication(
+  schemeId: string,
+  docIds: string[],
+  purpose: string,
+): { code: string; applicationId: string } | undefined {
+  const store = state();
+  const scheme = findScheme(schemeId);
+  if (!scheme) return undefined;
+
+  let code = randomCode();
+  while (store.shareCodes.some((item) => item.code === code)) code = randomCode();
+
+  const applicationId = `app-${Date.now()}`;
+  const now = new Date().toISOString();
+  const sortedSteps = [...scheme.steps].sort((a, b) => a.order - b.order);
+
+  const steps: ApplicationStep[] = sortedSteps.map((wStep, index) => ({
+    id: `${applicationId}::${wStep.id}`,
+    applicationId,
+    workflowStepId: wStep.id,
+    // Step 1 (received) is done immediately; step 2 enters the queue now.
+    enteredAt: index <= 1 ? now : undefined,
+    completedAt: index === 0 ? now : undefined,
+  }));
+
+  store.applications.push({
+    id: applicationId,
+    citizenId: store.citizen.id,
+    schemeId,
+    shareCode: code,
+    submittedAt: now,
+    steps,
+  });
+
+  store.shareCodes.push({
+    code,
+    citizenId: store.citizen.id,
+    applicationId,
+    purpose,
+    docIds,
+    createdAt: now,
+    expiresAt: new Date(Date.now() + 90 * DAY).toISOString(),
+    maxOpens: 50,
+  });
+
+  recordEvent({
+    eventType: 'SHARE_CODE_CREATED',
+    applicationId,
+    shareCode: code,
+    actorType: 'CITIZEN',
+    actorLabel: store.citizen.name,
+  });
+  recordEvent({
+    eventType: 'STEP_ENTERED',
+    applicationId,
+    stepId: steps[1]?.id,
+    shareCode: code,
+    actorType: 'SYSTEM',
+    actorLabel: 'System',
+  });
+
+  return { code, applicationId };
 }
 
 export function markStepCompleted(stepInstanceId: string): void {

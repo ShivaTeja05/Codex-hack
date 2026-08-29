@@ -11,10 +11,10 @@ export default function LoginPage() {
   const { setCitizenId, setRevealed } = useSession();
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
 
-  function enterDemo() {
-    setCitizenId('demo-priya');
+  function enterDemo(citizenId: string) {
+    setCitizenId(citizenId);
     setRevealed(false);
-    router.push('/home');
+    router.push('/check');
   }
 
   return (
@@ -40,11 +40,21 @@ export default function LoginPage() {
         ) : (
           <>
             <ReadonlyOtp />
-            <button className="primary-button" type="button" onClick={enterDemo}>Verify</button>
+            <button className="primary-button" type="button" onClick={() => enterDemo('demo-priya')}>Verify</button>
             <button className="link-button" type="button" onClick={() => setStep('phone')}>Back</button>
           </>
         )}
-        <button className="skip-link" type="button" onClick={enterDemo}>Skip to demo</button>
+        <div className="persona-picker">
+          <p className="persona-title">Skip the login. Open a sample record:</p>
+          <button className="persona-button" type="button" onClick={() => enterDemo('demo-priya')}>
+            <strong>Priya</strong>
+            <small>3 rules block her scholarship. Two are fixable.</small>
+          </button>
+          <button className="persona-button" type="button" onClick={() => enterDemo('demo-arun')}>
+            <strong>Arun</strong>
+            <small>Nothing blocks his. See what &ldquo;ready&rdquo; looks like.</small>
+          </button>
+        </div>
         <p className="simulation-note">simulated login · no real Aadhaar or OTP is used</p>
       </section>
     </main>

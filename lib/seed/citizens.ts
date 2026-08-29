@@ -61,6 +61,8 @@ export const citizens: Citizen[] = [
         provenance: 'uploaded',
         issuedOn: '2026-08-27',
         fields: {
+          name: 'P. Sharma',
+          fatherName: 'Rajiv Kumar',
           annualIncome: '₹2,80,000',
           bankAccount: 'DEMO-ACCT-9914',
         },

@@ -8,10 +8,15 @@ interface SessionState {
   revealed: boolean;
   reportedIssues: Record<string, TrackedReport>;
   activityChoices: Record<string, boolean>;
+  /** Ids of corrections the citizen has applied in this session. Order is kept. */
+  appliedCorrections: string[];
   setCitizenId(id: string): void;
   setRevealed(value: boolean): void;
   reportIssue(id: string): TrackedReport;
   setActivityChoice(id: string, recognised: boolean): TrackedReport | null;
+  applyCorrection(id: string): void;
+  undoCorrection(id: string): void;
+  resetCorrections(): void;
 }
 
 const SessionContext = createContext<SessionState | null>(null);
@@ -21,6 +26,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [revealed, setRevealed] = useState(false);
   const [reportedIssues, setReportedIssues] = useState<Record<string, TrackedReport>>({});
   const [activityChoices, setActivityChoices] = useState<Record<string, boolean>>({});
+  const [appliedCorrections, setAppliedCorrections] = useState<string[]>([]);
 
   function reportIssue(id: string): TrackedReport {
     const report = reportedIssues[id] ?? {
@@ -29,6 +35,18 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     };
     setReportedIssues((current) => ({ ...current, [id]: report }));
     return report;
+  }
+
+  function applyCorrection(id: string) {
+    setAppliedCorrections((current) => (current.includes(id) ? current : [...current, id]));
+  }
+
+  function undoCorrection(id: string) {
+    setAppliedCorrections((current) => current.filter((item) => item !== id));
+  }
+
+  function resetCorrections() {
+    setAppliedCorrections([]);
   }
 
   function setActivityChoice(id: string, recognised: boolean): TrackedReport | null {
@@ -42,12 +60,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       revealed,
       reportedIssues,
       activityChoices,
+      appliedCorrections,
       setCitizenId,
       setRevealed,
       reportIssue,
       setActivityChoice,
+      applyCorrection,
+      undoCorrection,
+      resetCorrections,
     }),
-    [citizenId, revealed, reportedIssues, activityChoices],
+    [citizenId, revealed, reportedIssues, activityChoices, appliedCorrections],
   );
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }

@@ -97,6 +97,21 @@ function applyDelta(target: TrailState, delta: Delta): void {
     }
   }
 
+  // Applications and share codes created after the seed. Add these before the
+  // timestamp replay below so their own steps pick up later opens/completions.
+  const knownApps = new Set(target.applications.map((app) => app.id));
+  for (const app of delta.a) if (!knownApps.has(app.id)) target.applications.push(structuredClone(app));
+
+  const knownCodes = new Set(target.shareCodes.map((code) => code.code));
+  for (const code of delta.s) if (!knownCodes.has(code.code)) target.shareCodes.push(structuredClone(code));
+
+  // Revocations the citizen made, so a revoked code stays revoked everywhere.
+  for (const shareCode of target.shareCodes) {
+    if (delta.v.includes(shareCode.code) && !shareCode.revokedAt) {
+      shareCode.revokedAt = new Date().toISOString();
+    }
+  }
+
   for (const application of target.applications) {
     for (const instance of application.steps) {
       if (delta.o[instance.id] && !instance.firstOpenedAt) instance.firstOpenedAt = delta.o[instance.id];
@@ -224,6 +239,27 @@ export function resolveFlag(
   return { applicationId: shareCode.applicationId };
 }
 
+/**
+ * Revoke a share code. Records the revocation in the delta so it holds across
+ * serverless instances, not just the one that served the request.
+ */
+export function revokeShareCode(code: string): ShareCode | undefined {
+  const shareCode = findShareCode(code);
+  if (!shareCode) return undefined;
+  if (!shareCode.revokedAt) {
+    shareCode.revokedAt = new Date().toISOString();
+    pending.v.push(shareCode.code);
+    recordEvent({
+      eventType: 'SHARE_CODE_REVOKED',
+      applicationId: shareCode.applicationId,
+      shareCode: shareCode.code,
+      actorType: 'CITIZEN',
+      actorLabel: 'Citizen',
+    });
+  }
+  return shareCode;
+}
+
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no O/0/I/1
 function randomCode(): string {
   const block = () =>
@@ -266,16 +302,15 @@ export function createApplication(
     completedAt: index === 0 ? now : undefined,
   }));
 
-  store.applications.push({
+  const application: Application = {
     id: applicationId,
     citizenId: store.citizen.id,
     schemeId,
     shareCode: code,
     submittedAt: now,
     steps,
-  });
-
-  store.shareCodes.push({
+  };
+  const shareCode: ShareCode = {
     code,
     citizenId: store.citizen.id,
     applicationId,
@@ -284,7 +319,15 @@ export function createApplication(
     createdAt: now,
     expiresAt: new Date(Date.now() + 90 * DAY).toISOString(),
     maxOpens: 50,
-  });
+  };
+
+  store.applications.push(application);
+  store.shareCodes.push(shareCode);
+  // Persist the new application and its code in the delta so any serverless
+  // instance can rebuild them from the cookie, not just the one that served
+  // this request. structuredClone keeps the cookie copy from later mutation.
+  pending.a.push(structuredClone(application));
+  pending.s.push(structuredClone(shareCode));
 
   recordEvent({
     eventType: 'SHARE_CODE_CREATED',

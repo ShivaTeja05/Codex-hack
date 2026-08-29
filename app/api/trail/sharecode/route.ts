@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { commitDelta } from '@/lib/trail/commit';
-import { createApplication, findShareCode, recordEvent } from '@/lib/trail/store';
+import { createApplication, revokeShareCode } from '@/lib/trail/store';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,17 +32,9 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   const body = (await request.json().catch(() => null)) as { code?: string } | null;
-  const shareCode = body?.code ? findShareCode(body.code) : undefined;
+  const shareCode = body?.code ? revokeShareCode(body.code) : undefined;
   if (!shareCode) {
     return NextResponse.json({ error: 'Unknown code.' }, { status: 400 });
   }
-  shareCode.revokedAt = new Date().toISOString();
-  recordEvent({
-    eventType: 'SHARE_CODE_REVOKED',
-    applicationId: shareCode.applicationId,
-    shareCode: shareCode.code,
-    actorType: 'CITIZEN',
-    actorLabel: 'Citizen',
-  });
   return commitDelta(NextResponse.json({ ok: true }));
 }

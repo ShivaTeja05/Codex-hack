@@ -304,6 +304,26 @@ export const events: DocEvent[] = [
   event('DOC_OPENED', 5 * DAY, { documentId: 'doc-category', applicationId: APP_1, stepId: s(5), actorLabel: 'Social Welfare Dept', actorOfficeId: 'off-sw' }),
   event('DOC_VERIFIED', 4 * DAY + 6 * HOUR, { documentId: 'doc-category', applicationId: APP_1, stepId: s(5), actorLabel: 'Social Welfare Dept', actorOfficeId: 'off-sw' }),
   event('STEP_ENTERED', 4 * DAY, { actorType: 'SYSTEM', actorLabel: 'System', applicationId: APP_1, stepId: s(6) }),
+  // An office outside this application's workflow opened the ID — allowed, but
+  // surfaced to the citizen as unusual. No stepId, so it does not touch status.
+  event('DOC_REOPENED', 2 * DAY + 3 * HOUR, {
+    documentId: 'doc-id',
+    applicationId: APP_1,
+    shareCode: PRIMARY_CODE,
+    actorType: 'OFFICER',
+    actorLabel: 'Data Analytics Cell (not in this application)',
+    actorOfficeId: 'off-analytics',
+    meta: { unusual: 'Opened by an office that is not part of this application.' },
+  }),
+  // A blocked attempt: a code no longer covering this document was used.
+  event('ACCESS_DENIED_RATE_LIMIT', 8 * DAY + 5 * HOUR, {
+    documentId: 'doc-id',
+    applicationId: APP_1,
+    shareCode: PRIMARY_CODE,
+    actorType: 'UNKNOWN',
+    actorLabel: 'Unlisted requester',
+    meta: { deniedReason: 'This document was not shared under this code. Blocked before anything was shown.' },
+  }),
   // Second application: the flag journey, already in progress.
   event('DOC_OPENED', 3 * DAY, { documentId: 'doc-ration', applicationId: 'app-2', stepId: 'app-2::income-cert-s3', actorLabel: 'Village Accountant, Sedam', actorOfficeId: 'off-village' }),
   event('DOC_FLAGGED', 3 * DAY - HOUR, {

@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import { days, deriveSteps, summarise } from '@/lib/trail/derive';
-
-const dayLabel = (value: number) => `${value} day${value === 1 ? '' : 's'}`;
 import {
   findApplication,
   findScheme,
@@ -9,19 +7,12 @@ import {
   state,
 } from '@/lib/trail/store';
 import type { DerivedStep } from '@/lib/trail/derive';
-import type { StepStatus } from '@/lib/trail/types';
+import { asLang, LANGS, STRINGS, tScheme, tStep, type Lang } from '@/lib/trail/i18n';
 
 export const dynamic = 'force-dynamic';
 
-const statusLabel: Record<StepStatus, string> = {
-  NOT_STARTED: 'Not started',
-  WAITING: 'Waiting in queue',
-  IN_REVIEW: 'Being checked',
-  ACTION_NEEDED: 'Action needed from you',
-  DONE: 'Done',
-};
-
-function TimeBar({ item }: { item: DerivedStep }) {
+function TimeBar({ item, lang }: { item: DerivedStep; lang: Lang }) {
+  const t = STRINGS[lang];
   const total = Math.max(item.waitingMs + item.handlingMs, 1);
   const waitPct = Math.round((item.waitingMs / total) * 100);
   const handlePct = 100 - waitPct;
@@ -29,19 +20,31 @@ function TimeBar({ item }: { item: DerivedStep }) {
 
   return (
     <div className="tr-bar-wrap">
-      <div className="tr-bar" role="img" aria-label={`Waiting ${days(item.waitingMs)} days, being checked ${days(item.handlingMs)} days`}>
+      <div className="tr-bar" role="img" aria-label={`${t.waiting} ${days(item.waitingMs)}, ${t.beingChecked} ${days(item.handlingMs)}`}>
         {waitPct > 0 ? <span className="tr-bar-wait" style={{ width: `${waitPct}%` }} /> : null}
         {handlePct > 0 ? <span className="tr-bar-handle" style={{ width: `${handlePct}%` }} /> : null}
       </div>
       <p className="tr-bar-key">
-        <span><i className="tr-key-wait" /> waiting {days(item.waitingMs)}d</span>
-        <span><i className="tr-key-handle" /> being checked {days(item.handlingMs)}d</span>
+        <span><i className="tr-key-wait" /> {t.waiting} {days(item.waitingMs)}{t.day === 'day' ? 'd' : ''}</span>
+        <span><i className="tr-key-handle" /> {t.beingChecked} {days(item.handlingMs)}{t.day === 'day' ? 'd' : ''}</span>
       </p>
     </div>
   );
 }
 
-export default function TrackPage({ params }: { params: { code: string } }) {
+export default function TrackPage({
+  params,
+  searchParams,
+}: {
+  params: { code: string };
+  searchParams: { lang?: string };
+}) {
+  const lang = asLang(searchParams.lang);
+  const t = STRINGS[lang];
+  const dayLabel = (value: number) => `${value} ${value === 1 ? t.day : t.days}`;
+  const langHref = (code: Lang) =>
+    `/track/${params.code}${code === 'en' ? '' : `?lang=${code}`}`;
+
   const shareCode = findShareCode(params.code);
   const application = findApplication(shareCode?.applicationId);
   const scheme = findScheme(application?.schemeId);
@@ -69,36 +72,57 @@ export default function TrackPage({ params }: { params: { code: string } }) {
   const summary = summarise(derived);
   const current = summary.current;
 
+  const headline = summary.needsCitizen
+    ? t.status.ACTION_NEEDED
+    : summary.doneCount === summary.totalCount && summary.totalCount > 0
+      ? t.approved
+      : current
+        ? tStep(current.step.plainName, lang)
+        : t.waitingToStart;
+
   return (
     <main className="tr-shell">
-      <p className="tr-eyebrow">{scheme.name}</p>
+      <nav className="tr-lang" aria-label="Language">
+        {LANGS.map((l) => (
+          <Link
+            key={l.code}
+            href={langHref(l.code)}
+            className={`tr-lang-btn ${l.code === lang ? 'tr-lang-on' : ''}`}
+            aria-current={l.code === lang ? 'true' : undefined}
+          >
+            {l.label}
+          </Link>
+        ))}
+      </nav>
+
+      <p className="tr-eyebrow">{tScheme(scheme.name, lang)}</p>
       <p className="tr-sub">
-        Submitted {new Date(application.submittedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+        {t.submitted} {new Date(application.submittedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
         {' · '}<span className="tr-mono">{shareCode.code}</span>
       </p>
 
       <section className={`tr-now ${summary.needsCitizen ? 'tr-now-action' : ''}`}>
         <dl>
-          <div><dt>Now at</dt><dd>{summary.headline}</dd></div>
+          <div><dt>{t.nowAt}</dt><dd>{headline}</dd></div>
           {current ? (
             <>
-              <div><dt>Sitting at</dt><dd>{current.step.officeName}</dd></div>
+              <div><dt>{t.sittingAt}</dt><dd>{current.step.officeName}</dd></div>
               <div>
-                <dt>For</dt>
+                <dt>{t.forLabel}</dt>
                 <dd>
                   {dayLabel(days(current.totalMs))}{' '}
-                  <span className="tr-soft">(this step usually takes {current.step.slaDays})</span>
+                  <span className="tr-soft">({t.usuallyTakes} {current.step.slaDays})</span>
                 </dd>
               </div>
             </>
           ) : null}
           <div>
-            <dt>You need to do</dt>
-            <dd>{summary.needsCitizen ? 'Replace one document — see below' : 'nothing right now'}</dd>
+            <dt>{t.youNeed}</dt>
+            <dd>{summary.needsCitizen ? t.replaceOne : t.nothing}</dd>
           </div>
         </dl>
         {current?.slaBreached ? (
-          <p className="tr-breach">Past its usual time by {current.overdueDays} day{current.overdueDays === 1 ? '' : 's'}.</p>
+          <p className="tr-breach">{t.breach(current.overdueDays)}</p>
         ) : null}
       </section>
 
@@ -108,15 +132,15 @@ export default function TrackPage({ params }: { params: { code: string } }) {
             <span className="tr-dot" aria-hidden="true" />
             <div className="tr-step-body">
               <div className="tr-step-head">
-                <h2>{item.step.plainName}</h2>
-                <span className={`tr-pill tr-pill-${item.status.toLowerCase()}`}>{statusLabel[item.status]}</span>
+                <h2>{tStep(item.step.plainName, lang)}</h2>
+                <span className={`tr-pill tr-pill-${item.status.toLowerCase()}`}>{t.status[item.status]}</span>
               </div>
               <p className="tr-office">{item.step.officeName}</p>
 
               {item.status === 'DONE' ? (
-                <p className="tr-done">Done in {dayLabel(days(item.totalMs))}</p>
+                <p className="tr-done">{t.doneIn} {dayLabel(days(item.totalMs))}</p>
               ) : null}
-              <TimeBar item={item} />
+              <TimeBar item={item} lang={lang} />
 
               {item.openFlags.map((flag) => (
                 <div className="tr-flag" key={flag.id}>
@@ -134,7 +158,10 @@ export default function TrackPage({ params }: { params: { code: string } }) {
       </ol>
 
       <section className="tr-card">
-        <h2 className="tr-h2">Who has opened your documents</h2>
+        <div className="tr-step-head" style={{ marginBottom: 10 }}>
+          <h2 className="tr-h2" style={{ margin: 0 }}>{t.whoOpened}</h2>
+          <Link className="tr-link" href="/access" style={{ fontSize: 13 }}>See all →</Link>
+        </div>
         <ul className="tr-access">
           {store.events
             .filter(
@@ -150,12 +177,14 @@ export default function TrackPage({ params }: { params: { code: string } }) {
                 <span className="tr-mono">{new Date(event.ts).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}</span>
                 <span>
                   {event.actorLabel} — {store.documents.find((d) => d.id === event.documentId)?.plainName}
-                  {event.eventType === 'ACCESS_DENIED_RATE_LIMIT' ? ' (blocked)' : ''}
+                  {event.eventType === 'ACCESS_DENIED_RATE_LIMIT' ? ` (${t.blocked})` : ''}
                 </span>
               </li>
             ))}
         </ul>
       </section>
+
+      {t.langNote ? <p className="tr-soft" style={{ marginTop: 14 }}>{t.langNote}</p> : null}
 
       <div className="tr-actions">
         <Link className="tr-btn tr-btn-ghost" href={`/officer/${shareCode.code}`}>Open the officer view (demo)</Link>

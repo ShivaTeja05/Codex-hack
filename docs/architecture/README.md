@@ -17,6 +17,7 @@ how the features compose.
 | 06 | [Benefit routing & DBT reasons](06-benefit-routing.md) | `/money` | Built |
 | 07 | [Access receipts & turnaround](07-access-receipts.md) | — | Specified |
 | 00 | [System architecture](00-system-architecture.md) | — | — |
+| — | [Diagrams](DIAGRAMS.md) | — | — |
 
 ## Status vocabulary
 

@@ -54,14 +54,43 @@ showing anything:
 The officer may decline and request the documents another way. **Disclosure
 before access is what separates a receipt from a beacon.**
 
+Receipts are recorded **per document**, not per bundle. Which documents an
+officer opened — and which they never touched — is the fallback signal when no
+reason is given at all.
+
 ```ts
 interface AccessReceipt {
   bundleRef: string;
   openedAt: string;
-  office: string;        // the office, never the individual
-  sequence: number;      // 1st, 2nd, 3rd open
+  office: string;              // the office, never the individual
+  documentsOpened: RecordSource[];
+  documentsUntouched: RecordSource[];
+  sequence: number;            // 1st, 2nd, 3rd open
 }
 ```
+
+### Show the fact, never the inference
+
+The citizen sees the list. The product does **not** interpret it.
+
+> Opened: income certificate (3), category certificate (1)
+> Not opened: Class 12 marksheet
+>
+> *An open count does not indicate a problem. Documents are opened for many
+> reasons, including refreshes and interruptions.*
+
+Rendering *"opened 3 times — likely an issue"* would be inferring intent from
+telemetry, which is the same adjudication this product refuses everywhere else.
+The rule holds here or it holds nowhere.
+
+### The signal degrades once it is used
+
+An officer who knows the citizen reads their access pattern will open every
+document once, mechanically, to produce a clean trail. Goodhart's law applies:
+the measure stops measuring as soon as it becomes a target.
+
+This is a reason to publish the pattern as **evidence of contact**, never as a
+quality score for a reviewer — and a reason never to rank offices by it.
 
 Note `office`, not `officer`. The citizen needs to know *which desk* has their
 file, not who the person is. Naming individuals would create a pressure surface
@@ -144,6 +173,10 @@ so nobody closes it.
 
 Receipts require a server. A self-contained envelope cannot record its own
 opening — that is exactly the property that makes it privacy-preserving.
+
+There is no stateless workaround. An officer who cooperates could return an
+"what I opened" code by hand, but the case worth solving is the officer who
+explains nothing, and that case needs a logged receipt or it needs nothing.
 
 So this feature is the **first** that genuinely needs infrastructure, and it
 should be built only if the accountability is worth the store. The counter-

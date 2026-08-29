@@ -12,6 +12,36 @@ export const capabilities: CapabilityDisclosure[] = [
     reason: 'Pure TypeScript compares synthetic records twice and computes what a correction changes.',
   },
   {
+    capability: 'Pre-submission rule check',
+    status: 'real',
+    reason:
+      'The scheme rulebook runs in pure TypeScript against the synthetic records and states the verdict before submission. Applying a correction recomputes every rule.',
+  },
+  {
+    capability: 'Linkage evidence tiers',
+    status: 'real',
+    reason:
+      'Confirmed, probable and unknowable are computed from what the records and the activity log actually support. No row claims more than its evidence.',
+  },
+  {
+    capability: 'Benefit-routing comparison',
+    status: 'real',
+    reason:
+      'Derived from the seeded bank and application records. The one-Aadhaar-one-account mechanic it demonstrates is real; the accounts are not.',
+  },
+  {
+    capability: 'DBT rejection reasons',
+    status: 'real',
+    reason:
+      'The reasons and official remedies are quoted from the PFMS document that already publishes them. The plain-language rewriting is ours and is labelled as such.',
+  },
+  {
+    capability: 'Department probe endpoints',
+    status: 'mocked',
+    reason:
+      'Every probe contract on the linkage map is a specification, not an integration. Nothing calls them. They describe what a department would need to expose.',
+  },
+  {
     capability: 'Issue ordering and tracked reports',
     status: 'real',
     reason: 'Deterministic local code orders issues and creates an in-memory reference for the session.',

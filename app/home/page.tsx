@@ -9,13 +9,14 @@ import { POST_MATRIC_SCHOLARSHIP_ID } from '@/lib/seed/entitlements';
 
 const actions = [
   { label: 'Applying for a scholarship', detail: 'Check it against the rules before you submit', href: '/check' },
-  { label: "Money didn't arrive", detail: 'See routing problems and what they cost', href: '/issues' },
+  { label: "Money didn't arrive", detail: 'See where scheme money actually lands', href: '/money' },
   { label: 'What am I connected to?', detail: 'See what is known, likely and unknowable', href: '/map' },
 ];
 
 const sections = [
   { label: 'Check before you apply', href: '/check', note: 'Will this be rejected?' },
   { label: 'Linkage map', href: '/map', note: 'Confirmed, probable, unknowable' },
+  { label: 'Where money goes', href: '/money', note: 'Routing and failed payments' },
   { label: 'Records', href: '/records', note: 'What agrees and what does not' },
   { label: 'Issues', href: '/issues', note: 'Problems and one next action' },
   { label: 'Activity', href: '/activity', note: 'Who verified your details' },

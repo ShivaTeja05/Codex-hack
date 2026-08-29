@@ -14,6 +14,7 @@ export function JourneyHeader() {
         <Link href="/home">Home</Link>
         <Link href="/check">Check</Link>
         <Link href="/map">Map</Link>
+        <Link href="/money">Money</Link>
         <Link href="/records">Records</Link>
         <Link href="/issues">Issues</Link>
         <Link href="/real">What&apos;s real?</Link>

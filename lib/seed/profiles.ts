@@ -22,7 +22,7 @@ export const citizenProfiles: CitizenProfile[] = [
         title: 'Scholarship money is routed to an unused account',
         detail: 'The benefit account was last used in 2022. The current form names a different account.',
         cost: '₹47,000 not received',
-        action: { label: 'How to reseed', href: '/records?open=bank' },
+        action: { label: 'See where it lands', href: '/money' },
         source: { instrument: 'TODO_CITATION' },
       },
       {
